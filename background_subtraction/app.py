@@ -1,7 +1,7 @@
 from io import BytesIO
 from PIL import Image
 from flask import Flask, request 
-from drowsiness_detector import detect_drowsiness
+from background_subtraction import apply_virtual_background
 import json
 
 app = Flask(__name__)
@@ -11,8 +11,8 @@ def make_prediction():
     if request.method == 'POST':
         file = request.files['file']
         # annotations = json.load(request.files['data'])['annotations']
-        image = Image.open(BytesIO(file.read()))
-        result = detect_drowsiness(image)
+        # image = Image.open(BytesIO(file.read()))
+        # result = detect_drowsiness(image)
         
         return {'drowsy': result['drowsy']} 
 
