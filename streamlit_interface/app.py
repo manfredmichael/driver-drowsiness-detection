@@ -20,46 +20,35 @@ def main():
     if "color_to_label" not in st.session_state:
         st.session_state["color_to_label"] = {}
 
-    webcam_file = st.file_uploader('Upload webcam image', type=['jpg', 'jpeg', 'png'], accept_multiple_files=False)
-    if webcam_file: 
-        webcam = Image.open(webcam_file).convert('RGB')
-        st.image(webcam)
-    background_file = st.file_uploader('Upload background image', type=['jpg', 'jpeg', 'png'], accept_multiple_files=False)
-    if background_file: 
-        background = Image.open(background_file).convert('RGB')
-        st.image(background)
+
+    st.markdown("### STEP 1: Upload your virtual background image")    
     virtual_background_file = st.file_uploader('Upload virtual background image', type=['jpg', 'jpeg', 'png'], accept_multiple_files=False)
     if virtual_background_file: 
         virtual_background = Image.open(virtual_background_file).convert('RGB')
         st.image(virtual_background)
 
-    if webcam_file and background_file and virtual_background_file: 
-        # result = inference(image)
-        # def serve_pil_image(pil_img):
-        #     img_io = BytesIO()
-        #     pil_img.save(img_io, 'JPEG', quality=70)
-        #     img_io.seek(0)
-        #     return img_io
-        # r = Image.open(BytesIO(serve_pil_image(image).read()))
-        # st.write(type(r))
-        # st.write(type(image))
+    st.markdown("### STEP 2: Upload your empty background image (tip: hide under the table!)")    
+    background_file = st.file_uploader('Upload background image', type=['jpg', 'jpeg', 'png'], accept_multiple_files=False)
+    if background_file: 
+        background = Image.open(background_file).convert('RGB')
+        st.image(background)
 
-        # st.write(result)
+    st.markdown("### STEP 3: Upload YOU!")    
+    webcam_file = st.file_uploader('Upload webcam image', type=['jpg', 'jpeg', 'png'], accept_multiple_files=False)
+    if webcam_file: 
+        webcam = Image.open(webcam_file).convert('RGB')
+        st.image(webcam)
+
+    if webcam_file and background_file and virtual_background_file:
+        st.markdown("---")
+        st.markdown("# Virtual Background Result")
+
         st.image(inference(webcam, background, virtual_background))
-
-    # color_annotation_app()
-
-    # with st.sidebar:
-    #     # st.markdown("---")
-    #     st.markdown(
-    #         '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://github.com/manfredmichael">Manfred Michael</a></h6>',
-    #         unsafe_allow_html=True,
-    #     )
 
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="Driver Drowsiness Detector", page_icon=":pencil2:"
+        page_title="Virtual Background with Image Processing", page_icon=":pencil2:"
     )
-    st.title("Driver Drowsiness Detector")
+    st.title("Virtual Background with Image Processing")
     # st.sidebar.subheader("Configuration")
     main()
