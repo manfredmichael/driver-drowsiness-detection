@@ -36,8 +36,8 @@ def insert_to_middle(back, img):
     return result
 
 def rescale(img, scale_percent):
-    width = int(webcam.shape[1] * scale_percent / 100)
-    height = int(webcam.shape[0] * scale_percent / 100)
+    width = int(img.shape[1] * scale_percent / 100)
+    height = int(img.shape[0] * scale_percent / 100)
     dim = (width, height)
 
     img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
@@ -91,7 +91,7 @@ def apply_virtual_background(webcam, background, virtual_background):
 
 
 if __name__ == '__main__':
-    webcam = cv2.imread('images/webcam5.sng')
+    webcam = cv2.imread('images/webcam3.png')
     background = cv2.imread('images/background1.png')
     virtual_background = cv2.imread('images/nodeflux_background.png')
     mask = get_mask(webcam, background)
