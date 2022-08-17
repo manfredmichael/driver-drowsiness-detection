@@ -1,2 +1,3 @@
-# driver-drowsiness-detection
-# driver-drowsiness-detection
+# virtual-background-opencv
+
+Background substraction technique without ML. Only image processing methods used.
