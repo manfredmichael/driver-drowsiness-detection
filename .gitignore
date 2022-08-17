@@ -1,2 +1,2 @@
 *.dat
-*/__pychache__/*
+__pychache__/*
