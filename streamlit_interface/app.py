@@ -43,7 +43,15 @@ def main():
         st.markdown("---")
         st.markdown("# Virtual Background Result")
 
-        st.image(inference(webcam, background, virtual_background))
+        steps, result = inference(webcam, background, virtual_background)
+
+        st.markdown(f"### The steps")
+        for step_name, step_image in steps.items():
+            st.markdown(f"##### {step_name}")
+            st.image(step_image)
+
+        st.markdown(f"### The result")
+        st.image(result)
 
 if __name__ == "__main__":
     st.set_page_config(
