@@ -59,32 +59,39 @@ def rescale(img, scale_percent):
     
     return img
 
-def get_mask(webcam, background):
+def get_mask(webcam, background, return_steps=False):
     webcam = webcam.copy()
     background = background.copy()
+
+    step_images = []
     
     # resize image
     webcam = rescale(webcam, scale_percent=40)
     background = rescale(background, scale_percent=40)
-    
-    # webcam = cv2.GaussianBlur(webcam,(7,7),0)
-    # background = cv2.GaussianBlur(background,(7,7),0)
+
+    step_images.append(['rescale', webcam])
 
     webcam = cv2.medianBlur(src=webcam, ksize=5)
+    step_images.append(['medianBlur', webcam])
     background = cv2.medianBlur(src=background, ksize=5)
 
-
     image3 = cv2.absdiff(webcam, background)
+    step_images.append(['absdiff', image3])
 
     image3 = cv2.inRange(image3, (5, 5, 5), (255, 255, 255))
+    step_images.append(['inRange', image3])
     for i in range(100):
         image3 = cv2.GaussianBlur(image3,(5,5),0)
+    step_images.append(['GaussianBlur', image3])
 
     # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
     # (thresh, binRed) = cv2.threshold(image3, 128, 255, cv2.THRESH_BINARY)
     # image3 = cv2.morphologyEx(image3, cv2.MORPH_OPEN, kernel, iterations=3)
     image3 = cv2.inRange(image3, (128), (255))
+    step_images.append(['inRange', image3])
 
+    if return_steps:
+        return step_images, image3
     return image3
 
 def apply_mask(webcam, mask, virtual_background):
@@ -100,10 +107,12 @@ def apply_mask(webcam, mask, virtual_background):
     result[mask_resized<128] = virtual_background[mask_resized<128]
     return result
 
-def apply_virtual_background(webcam, background, virtual_background):
-    mask = get_mask(webcam, background)
+def apply_virtual_background(webcam, background, virtual_background, return_steps=False):
+    step_images, mask = get_mask(webcam, background, return_steps)
     result = apply_mask(webcam, mask, virtual_background)
 
+    if return_steps:
+        return step_images, result
     return result
 
 def main():
