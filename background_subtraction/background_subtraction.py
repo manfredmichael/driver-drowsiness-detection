@@ -2,6 +2,26 @@ import cv2
 import numpy as np
 
 
+
+
+def resize_image(img1, resize_to):
+    # load resized image as grayscale
+    h, w, _= img1.shape
+
+    # load background image as grayscale
+    hh, ww, _ = resize_to.shape
+
+    ratio = hh/h 
+    img1 = cv2.resize(img1, (int(w * ratio), int(h * ratio)), interpolation= cv2.INTER_LINEAR)
+    
+    h, w, _= img1.shape
+
+    ratio = ww/w
+    if ratio < 1:
+        img1 = cv2.resize(img1, (int(w * ratio), int(h * ratio)), interpolation= cv2.INTER_LINEAR)
+    
+    return img1
+
 def insert_to_middle(back, img):
     if len(img.shape)<3:
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
@@ -9,20 +29,15 @@ def insert_to_middle(back, img):
     # if back.shape[0] < img.shape[0] or back.shape[1] < img.shape[1]:s
     #     img = rescale(img, scale_percent=50)
 
+    img = resize_image(img, resize_to=back)
 
-# load resized image as grayscale
+
     h, w, _= img.shape
-
-# load background image as grayscale
     hh, ww, _ = back.shape
-
-    ratio = hh/h 
-    img = cv2.resize(img, (int(w * ratio), int(h * ratio)), interpolation= cv2.INTER_LINEAR)
-    h, w, _= img.shape
     
     
 # compute xoff and yoff for placement of upper left corner of resized image   
-    yoff = round((hh-h)/2)
+    yoff = round(hh-h)
     xoff = round((ww-w)/2)
     if yoff<0:
         yoff=0
@@ -63,16 +78,18 @@ def get_mask(webcam, background):
 
     image3 = cv2.inRange(image3, (5, 5, 5), (255, 255, 255))
     for i in range(100):
-        image3 = cv2.GaussianBlur(image3,(3,3),0)
+        image3 = cv2.GaussianBlur(image3,(5,5),0)
 
     # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
     # (thresh, binRed) = cv2.threshold(image3, 128, 255, cv2.THRESH_BINARY)
     # image3 = cv2.morphologyEx(image3, cv2.MORPH_OPEN, kernel, iterations=3)
+    image3 = cv2.inRange(image3, (128), (255))
 
     return image3
 
 def apply_mask(webcam, mask, virtual_background):
     result = webcam.copy()
+    result= resize_image(result, resize_to=virtual_background)
     # result[mask<128] = [0,0,0]
 
 
@@ -89,11 +106,11 @@ def apply_virtual_background(webcam, background, virtual_background):
 
     return result
 
-
-if __name__ == '__main__':
-    webcam = cv2.imread('images/webcam3.png')
+def main():
+    webcam = cv2.imread('images/webcam4.png')
     background = cv2.imread('images/background1.png')
     virtual_background = cv2.imread('images/nodeflux_background.png')
+    virtual_background = rescale(virtual_background, scale_percent=40)
     mask = get_mask(webcam, background)
     result = apply_mask(webcam, mask, virtual_background)
 
@@ -110,3 +127,7 @@ if __name__ == '__main__':
             break
 
     cv2.destroyAllWindows()
+
+
+if __name__ == '__main__':
+    main()
