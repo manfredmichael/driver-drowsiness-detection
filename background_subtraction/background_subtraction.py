@@ -78,7 +78,7 @@ def get_mask(webcam, background, return_steps=False):
     image3 = cv2.absdiff(webcam, background)
     step_images.append(['absdiff', image3])
 
-    image3 = cv2.inRange(image3, (5, 5, 5), (255, 255, 255))
+    image3 = cv2.inRange(image3, (7, 7, 7), (255, 255, 255))
     step_images.append(['inRange', image3])
     for i in range(100):
         image3 = cv2.GaussianBlur(image3,(5,5),0)
