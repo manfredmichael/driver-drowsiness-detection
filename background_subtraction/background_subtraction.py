@@ -75,20 +75,37 @@ def get_mask(webcam, background, return_steps=False):
     step_images.append(['medianBlur', webcam])
     background = cv2.medianBlur(src=background, ksize=5)
 
+    backSub = cv2.createBackgroundSubtractorMOG2()
+    fgMask = backSub.apply(background)
+    fgMask = backSub.apply(webcam)
+    step_images.append(['MOG Mask', fgMask])
+
     image3 = cv2.absdiff(webcam, background)
     step_images.append(['absdiff', image3])
 
     image3 = cv2.inRange(image3, (7, 7, 7), (255, 255, 255))
     step_images.append(['inRange', image3])
+
+    se1 = cv2.getStructuringElement(cv2.MORPH_RECT, (5,5))
+    se2 = cv2.getStructuringElement(cv2.MORPH_RECT, (7,7))
+    image3 = cv2.morphologyEx(image3, cv2.MORPH_CLOSE, se1)
+    image3 = cv2.morphologyEx(image3, cv2.MORPH_OPEN, se2)
+
+    step_images.append(['morphologyEx', image3])
+
+    image3 = image3 * (fgMask)
+    step_images.append(['Apply MOG Mask', image3])
+
     for i in range(100):
         image3 = cv2.GaussianBlur(image3,(5,5),0)
     step_images.append(['GaussianBlur', image3])
 
-    # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-    # (thresh, binRed) = cv2.threshold(image3, 128, 255, cv2.THRESH_BINARY)
-    # image3 = cv2.morphologyEx(image3, cv2.MORPH_OPEN, kernel, iterations=3)
-    image3 = cv2.inRange(image3, (128), (255))
+    image3 = cv2.inRange(image3, (50), (255))
     step_images.append(['inRange', image3])
+
+    kernel = np.ones((3,3),np.uint8)
+    image3 = cv2.erode(image3,kernel,iterations = 2)
+    step_images.append(['erode', image3])
 
     if return_steps:
         return step_images, image3
