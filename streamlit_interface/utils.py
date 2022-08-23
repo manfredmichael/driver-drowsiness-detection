@@ -4,11 +4,12 @@ from PIL import Image
 from io import BytesIO, StringIO
 from base64 import decodebytes, encodebytes
 import numpy as np
-# import cv2
-# import matplotlib.pyplot as plt
 import os
+import dotenv
 
-inference_url = '127.0.0.1'
+dotenv.load_dotenv()
+
+inference_url = os.getenv('INFERENCE_URL') 
 
 def encode_image(pil_img):
     byte_arr = BytesIO()
@@ -26,7 +27,7 @@ def decode_image(image_bytes):
 def inference(webcam, background, virtual_background):
     
     response = requests.post(
-            f"http://{inference_url}:5000/predict",
+            f"{inference_url}/predict",
         files = {'webcam': encode_image(webcam),
                  'background': encode_image(background),
                  'virtual_background': encode_image(virtual_background),
