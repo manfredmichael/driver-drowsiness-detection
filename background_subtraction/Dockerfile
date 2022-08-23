@@ -10,7 +10,4 @@ COPY app.py app/
 RUN adduser -D myuser
 USER myuser
 
-# ENTRYPOINT [ "python" ]
-# CMD ["app/app.py" ]
-
 CMD gunicorn --bind 0.0.0.0:$PORT wsgi
