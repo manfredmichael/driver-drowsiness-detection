@@ -1,4 +1,5 @@
 *.dat
+*.env
 background_subtraction/__pycache__/
 streamlit_interface/__pycache__/
 
