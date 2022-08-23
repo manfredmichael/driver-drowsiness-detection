@@ -10,4 +10,4 @@ COPY app.py app/
 # ENTRYPOINT [ "python" ]
 # CMD ["app/app.py" ]
 
-CMD gunicorn --bind 0.0.0.0:5000 wsgi
+CMD gunicorn --bind 0.0.0.0:$PORT wsgi
