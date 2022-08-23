@@ -7,6 +7,9 @@ RUN pip install -r app/requirements.txt
 COPY background_subtraction.py app/
 COPY app.py app/
 
+RUN adduser -D myuser
+USER myuser
+
 # ENTRYPOINT [ "python" ]
 # CMD ["app/app.py" ]
 
