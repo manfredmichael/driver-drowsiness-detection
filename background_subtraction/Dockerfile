@@ -7,7 +7,7 @@ RUN pip install -r app/requirements.txt
 COPY background_subtraction.py app/
 COPY app.py app/
 
-ENTRYPOINT [ "python" ]
-CMD ["app/app.py" ]
+# ENTRYPOINT [ "python" ]
+# CMD ["app/app.py" ]
 
-EXPOSE 5000
+CMD gunicorn --bind 0.0.0.0:$PORT wsgi
